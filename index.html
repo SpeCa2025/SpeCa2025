@@ -29,7 +29,6 @@
       <div class="columns is-centered">
         <div class="column has-text-centered">
           <h1 class="title is-1 publication-title">
-
             SpeCa: Accelerating Diffusion Transformers with Speculative Feature Caching
           </h1>
           <div class="is-size-5 publication-authors">
@@ -68,14 +67,6 @@
   </div>
 </section>
 
-
-
-
-
-
-
-
-
 <!-- Paper abstract -->
 <section class="section hero is-light">
   <div class="container is-max-desktop">
@@ -84,11 +75,9 @@
         <h2 class="title is-3">Abstract</h2>
         <div class="content has-text-justified">
           <p>
-
 Diffusion models have revolutionized high-fidelity image and video synthesis, yet their computational demands remain prohibitive for real-time applications. These models face two fundamental challenges: strict temporal dependencies preventing parallelization, and computationally intensive forward passes required at each denoising step. Drawing inspiration from speculative decoding in large language models, we present \textit{SpeCa}, a novel ``\textit{\textbf{Forecast-then-verify}}'' acceleration framework that effectively addresses both limitations. \textit{SpeCa}'s core innovation lies in introducing Speculative Sampling to diffusion models, predicting intermediate features for subsequent timesteps based on fully computed reference timesteps. Our approach implements a parameter-free verification mechanism that efficiently evaluates prediction reliability, enabling real-time decisions to accept or reject each prediction while incurring negligible computational overhead.
 %This mechanism fundamentally resolves error accumulation issues that plague existing acceleration methods at high speedup ratios.
 Furthermore, \textit{SpeCa} introduces sample-adaptive computation allocation that dynamically modulates resources based on generation complexity—allocating reduced computation for simpler samples while preserving intensive processing for complex instances. Experiments demonstrate 6.34$\times$ acceleration on FLUX with minimal quality degradation (5.5\% drop), 7.3$\times$ speedup on DiT while preserving generation fidelity, and 79.84\% VBench score at 6.1$\times$ acceleration for  HunyuanVideo. The verification mechanism incurs minimal overhead (1.67\%-3.5\% of full inference costs), establishing a new paradigm for efficient diffusion model inference while maintaining generation quality even at aggressive acceleration ratios. Codes are available in the supplementary material and will be released in Github.
-
           </p>
         </div>
       </div>
@@ -121,7 +110,7 @@ Furthermore, \textit{SpeCa} introduces sample-adaptive computation allocation th
         </div>
       </div>
 
-      <!-- 四宫格视频展示 -->
+      <!-- 3x2视频展示 -->
       <div id="video-grid" class="columns is-multiline">
         <!-- Videos will be dynamically inserted here by JavaScript -->
       </div>
@@ -132,118 +121,130 @@ Furthermore, \textit{SpeCa} introduces sample-adaptive computation allocation th
 <!-- 页脚 -->
 <footer class="footer">
   <div class="content has-text-centered">
-    <p>TaylorSeer © 2025</p>
+    <p>SpeCa © 2025</p>
   </div>
 </footer>
 
 <script>
 const folders = [
-  'a car stuck in traffic during rush hour',
-  'a donut and a suitcase',
-    'a horse running to join a herd of its kind',
-    'a horse taking a peaceful walk',
-    'a knife on the left of a spoon, front view',
-    'a motorcycle on the left of a bus, front view',
-    'a motorcycle turning a corner',
-    'A person is arranging flowers',
-    'A person is playing flute',
-    'A robot DJ is playing',
-    'A tranquil tableau of a dining table',
-    'A tranquil tableau of restaurant',
-    'a truck and a bicycle',
-    'An astronaut flying in space, pan right',
-    'Clown fish swimming through the coral reef',
-    'tower',
+  'a baseball glove on the right of a tennis racket, front view-0',
+  'a clock-2',
+  'a donut and a suitcase-0',
+  'a motorcycle on the left of a bus, front view-3',
+  'a purple bicycle-3',
+  'a vase-4',
+  'an airplane on the left of a train, front view-0',
+  'windmill-2',
 ];
+
 const videoPages = folders.map(folder => [
+  { title: 'SpeCa', src: `static/videos/Video/${folder}/SpeCa.mp4` },
+  { title: 'TeaCache', src: `static/videos/Video/${folder}/Teacache.mp4` },
   { title: 'TaylorSeer', src: `static/videos/Video/${folder}/TaylorSeer.mp4` },
   { title: 'FORA', src: `static/videos/Video/${folder}/FORA.mp4` },
   { title: 'ToCa', src: `static/videos/Video/${folder}/ToCa.mp4` },
   { title: 'DuCa', src: `static/videos/Video/${folder}/DuCa.mp4` }
 ]);
 
+let currentPage = 1;
+const totalPages = videoPages.length;
 
-  let currentPage = 1;
-  const totalPages = videoPages.length;
+// 加载视频页面
+function loadVideoPage(page) {
+  const videoGrid = document.getElementById('video-grid');
+  videoGrid.innerHTML = ''; // 清空现有的视频
 
-  // 加载视频页面
-  function loadVideoPage(page) {
-    const videoGrid = document.getElementById('video-grid');
-    videoGrid.innerHTML = ''; // 清空现有的视频
+  const videos = videoPages[page - 1];
 
-const videos = videoPages[page - 1].map(video => {
-  let videoTitle = '';
+  // 创建3行，每行2个视频
+  for (let i = 0; i < 3; i++) {
+    const row = document.createElement('div');
+    row.className = 'columns is-multiline';
 
-  switch (video.title) {
-    case 'TaylorSeer':
-      videoTitle = 'TaylorSeer x 5.00';
-      break;
-    case 'ToCa':
-      videoTitle = 'ToCa x 4.25';
-      break;
-    case 'FORA':
-      videoTitle = 'FORA x 5.00';
-      break;
-    case 'DuCa':
-      videoTitle = 'DuCa x 4.62';
-      break;
-    default:
-      videoTitle = video.title;
-  }
+    for (let j = 0; j < 2; j++) {
+      const index = i * 2 + j;
+      if (index >= videos.length) break;
 
-  return `
-    <div class="column is-half">
-      <h3 class="subtitle has-text-centered">${videoTitle}</h3>
-      <video controls muted width="100%" autoplay>
-        <source src="${video.src}" type="video/mp4">
-      </video>
-    </div>
-  `;
-}).join('');
+      const video = videos[index];
+      let videoTitle = '';
 
-    videoGrid.innerHTML = videos;
-
-    // 监听所有视频播放完毕的事件
-    const videoElements = Array.from(videoGrid.querySelectorAll('video'));
-    Promise.all(videoElements.map(video => {
-      return new Promise(resolve => {
-        video.onended = resolve;
-      });
-    })).then(() => {
-      // 所有视频播放完毕，自动翻页
-      if (currentPage < totalPages) {
-        currentPage++;
-      } else {
-        currentPage = 1; // 循环回到第一页
+      switch (video.title) {
+        case 'SpeCa':
+          videoTitle = 'TaylorSeer x 6.16';
+          break;
+        case 'TeaCache':
+          videoTitle = 'TeaCache x 5.56';
+          break;
+        case 'TaylorSeer':
+          videoTitle = 'TaylorSeer x 5.56';
+          break;
+        case 'ToCa':
+          videoTitle = 'ToCa x 4.25';
+          break;
+        case 'FORA':
+          videoTitle = 'FORA x 5.00';
+          break;
+        case 'DuCa':
+          videoTitle = 'DuCa x 4.62';
+          break;
+        default:
+          videoTitle = video.title;
       }
-      loadVideoPage(currentPage);
-    });
 
-    // 更新按钮的禁用状态
-    document.getElementById('prevPage').disabled = page === 1;
-    document.getElementById('nextPage').disabled = page === totalPages;
+      const videoColumn = document.createElement('div');
+      videoColumn.className = 'column is-half';
+      videoColumn.innerHTML = `
+        <h3 class="subtitle has-text-centered">${videoTitle}</h3>
+        <video controls muted width="100%" autoplay>
+          <source src="${video.src}" type="video/mp4">
+        </video>
+      `;
+
+      row.appendChild(videoColumn);
+    }
+
+    videoGrid.appendChild(row);
   }
 
-  // 点击“上一页”按钮
-  document.getElementById('prevPage').addEventListener('click', function () {
-    if (currentPage > 1) {
-      currentPage--;
-      loadVideoPage(currentPage);
-    }
-  });
-
-  // 点击“下一页”按钮
-  document.getElementById('nextPage').addEventListener('click', function () {
+  // 监听所有视频播放完毕的事件
+  const videoElements = Array.from(videoGrid.querySelectorAll('video'));
+  Promise.all(videoElements.map(video => {
+    return new Promise(resolve => {
+      video.onended = resolve;
+    });
+  })).then(() => {
+    // 所有视频播放完毕，自动翻页
     if (currentPage < totalPages) {
       currentPage++;
-      loadVideoPage(currentPage);
+    } else {
+      currentPage = 1; // 循环回到第一页
     }
+    loadVideoPage(currentPage);
   });
 
-  // 初始化加载第一页视频
-  loadVideoPage(currentPage);
+  // 更新按钮的禁用状态
+  document.getElementById('prevPage').disabled = page === 1;
+  document.getElementById('nextPage').disabled = page === totalPages;
+}
 
+// 点击"上一页"按钮
+document.getElementById('prevPage').addEventListener('click', function () {
+  if (currentPage > 1) {
+    currentPage--;
+    loadVideoPage(currentPage);
+  }
+});
 
+// 点击"下一页"按钮
+document.getElementById('nextPage').addEventListener('click', function () {
+  if (currentPage < totalPages) {
+    currentPage++;
+    loadVideoPage(currentPage);
+  }
+});
+
+// 初始化加载第一页视频
+loadVideoPage(currentPage);
 </script>
 
 </body>
