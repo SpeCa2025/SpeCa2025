@@ -1,0 +1,189 @@
+/* video-carousel.css */
+/* 核心视频容器样式 */
+.large-video {
+  width: 70%;
+  max-width: 900px;
+  margin: 2rem auto; /* 增加垂直间距 */
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  background: white;
+  position: relative;
+}
+
+.large-video:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+
+.large-video video {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* 标题样式 */
+.large-video h3 {
+  background: linear-gradient(135deg, #4a89dc, #5d9cec);
+  color: white;
+  padding: 1.2rem;
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+
+/* 场景名称样式 */
+#folder-name {
+  display: block;
+  color: #363636;
+  font-size: 1.3rem;
+  margin: 1.5rem 0;
+  padding: 0.8rem 2rem;
+  background-color: #f5f7fa;
+  border-radius: 30px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 视频网格布局 */
+.video-grid {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(2, 1fr);
+  margin: 3rem auto;
+  max-width: 90%;
+}
+
+.video-group {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  background-color: white;
+  position: relative;
+}
+
+.video-group:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+}
+
+.video-group h3 {
+  background: linear-gradient(135deg, #5d9cec, #4fc1e9);
+  color: white;
+  padding: 0.8rem;
+  margin: 0;
+  text-align: center;
+  font-weight: 600;
+}
+
+.video-group video {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* 加载动画样式 */
+.video-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0,0,0,0.1);
+  z-index: 10;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* 响应式设计 */
+@media screen and (max-width: 768px) {
+  .large-video {
+    width: 90%;
+    margin: 1.5rem auto;
+  }
+
+  .video-grid {
+    grid-template-columns: 1fr;
+    max-width: 95%;
+    margin: 2rem auto;
+  }
+
+  #folder-name {
+    font-size: 1.1rem;
+    padding: 0.6rem 1.5rem;
+  }
+}
+
+@media screen and (min-width: 1600px) {
+  .large-video {
+    max-width: 1100px;
+  }
+}
+
+/* 画廊主标题装饰线 */
+.container h2.title.is-3 {
+  text-align: center;
+  margin-bottom: 3rem;
+  position: relative;
+  padding-bottom: 1.2rem;
+}
+
+.container h2.title.is-3:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(to right, #4a89dc, #5d9cec);
+  border-radius: 2px;
+}
+
+/* 悬停遮罩效果 */
+.video-group:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(74, 137, 220, 0.05);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.video-group:hover:before {
+  opacity: 1;
+}
+
+/* 过渡动画 */
+.video-group,
+.large-video {
+  transition:
+    transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    box-shadow 0.3s ease,
+    opacity 0.3s ease;
+}
